@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Hikma Remsima - UI Redesign Preview</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --primary: #2563EB;
+    --primary-dark: #1D4ED8;
+    --primary-light: #3B82F6;
+    --bg: #F0F4F8;
+    --card: #FFFFFF;
+    --text: #1A2B4A;
+    --text-secondary: #64748B;
+    --text-muted: #94A3B8;
+    --border: #E2E8F0;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #1a1a2e;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+    padding: 40px;
+    min-height: 100vh;
+    flex-wrap: wrap;
+  }
+
+  .screen-label {
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  .phone-frame {
+    width: 375px;
+    height: 812px;
+    background: var(--bg);
+    border-radius: 40px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.4);
+    border: 8px solid #222;
+  }
+
+  .phone-frame .screen {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .screen::-webkit-scrollbar { display: none; }
+
+  /* ===== HERO GRADIENT ===== */
+  .hero {
+    background: linear-gradient(135deg, #1E40AF 0%, #2563EB 50%, #3B82F6 100%);
+    padding: 50px 20px 24px;
+    border-radius: 0 0 24px 24px;
+    color: white;
+  }
+
+  .hero-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+
+  .hero-greeting p { font-size: 13px; opacity: 0.7; font-weight: 500; }
+  .hero-greeting h1 { font-size: 22px; font-weight: 800; }
+
+  .hero-bell {
+    width: 40px; height: 40px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(10px);
+  }
+
+  /* Next Dose Card */
+  .next-dose-card {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .progress-ring-container {
+    position: relative;
+    width: 80px; height: 80px;
+    flex-shrink: 0;
+  }
+
+  .progress-ring-container svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .progress-ring-container .track { stroke: rgba(255,255,255,0.15); fill: none; stroke-width: 6; }
+  .progress-ring-container .fill {
+    stroke: white; fill: none; stroke-width: 6; stroke-linecap: round;
+    stroke-dasharray: 264; stroke-dashoffset: 66;
+    filter: drop-shadow(0 0 4px rgba(255,255,255,0.3));
+  }
+
+  .progress-ring-container .center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .progress-ring-container .center .num { font-size: 22px; font-weight: 800; }
+  .progress-ring-container .center .label { font-size: 8px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6; font-weight: 600; }
+
+  .dose-info .dose-label { font-size: 11px; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+  .dose-info .dose-name { font-size: 16px; font-weight: 700; margin-top: 2px; }
+  .dose-info .dose-date { font-size: 13px; opacity: 0.8; margin-top: 4px; display: flex; align-items: center; gap: 6px; }
+
+  .log-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 12px;
+    background: white; color: var(--primary);
+    border: none; border-radius: 12px;
+    font-weight: 600; font-size: 14px;
+    margin-top: 14px; cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  /* Stats Row */
+  .stats-row {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px; margin-top: 14px;
+  }
+
+  .stat-card {
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .stat-card .stat-val { font-size: 18px; font-weight: 800; }
+  .stat-card .stat-label { font-size: 9px; opacity: 0.5; font-weight: 600; margin-top: 2px; }
+
+  /* ===== CONTENT AREA ===== */
+  .content { padding: 20px; }
+
+  .section-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+  }
+  .section-header h2 { font-size: 17px; font-weight: 700; color: var(--text); }
+  .section-header a { font-size: 13px; color: var(--primary); font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 2px; }
+
+  /* Event/Reminder Cards */
+  .event-card {
+    background: white; border-radius: 14px; padding: 14px;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .event-icon {
+    width: 42px; height: 42px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 18px;
+  }
+  .event-icon.blue { background: #EFF6FF; }
+  .event-icon.green { background: #ECFDF5; }
+  .event-icon.amber { background: #FFFBEB; }
+  .event-icon.purple { background: #F5F3FF; }
+
+  .event-info { flex: 1; min-width: 0; }
+  .event-info .event-title { font-size: 13px; font-weight: 600; color: var(--text); }
+  .event-info .event-desc { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+
+  .event-badge {
+    font-size: 10px; font-weight: 600; padding: 4px 10px;
+    border-radius: 20px; white-space: nowrap;
+  }
+  .event-badge.blue { background: #EFF6FF; color: var(--primary); }
+  .event-badge.green { background: #ECFDF5; color: var(--success); }
+  .event-badge.amber { background: #FFFBEB; color: var(--warning); }
+
+  /* Quick Actions Grid */
+  .actions-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; margin-bottom: 24px;
+  }
+
+  .action-card {
+    background: white; border-radius: 16px; padding: 18px 12px;
+    text-align: center; display: flex; flex-direction: column;
+    align-items: center; gap: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: all 0.2s;
+  }
+
+  .action-icon {
+    width: 48px; height: 48px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+
+  .action-card .action-title { font-size: 13px; font-weight: 600; color: var(--text); }
+  .action-card .action-desc { font-size: 10px; color: var(--text-secondary); }
+
+  /* ===== BOTTOM NAV ===== */
+  .bottom-nav {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: white;
+    border-top: 1px solid #F1F5F9;
+    padding: 8px 8px 24px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+  }
+
+  .nav-items {
+    display: flex; justify-content: space-around; align-items: flex-end;
+  }
+
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    text-decoration: none; min-width: 50px;
+    color: var(--text-muted); transition: all 0.2s;
+  }
+  .nav-item.active { color: var(--primary); }
+  .nav-item .nav-icon { font-size: 20px; }
+  .nav-item .nav-label { font-size: 10px; font-weight: 600; }
+  .nav-item.active .nav-indicator {
+    width: 20px; height: 2px; background: var(--primary); border-radius: 2px;
+    position: absolute; top: -2px;
+  }
+
+  .nav-center {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    margin-top: -20px; text-decoration: none;
+  }
+  .nav-center .fab {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 22px;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.4);
+  }
+  .nav-center .nav-label { font-size: 10px; font-weight: 600; color: var(--text-muted); }
+
+  /* ===== SCREEN 2: DIARY ===== */
+  .diary-header {
+    padding: 50px 20px 16px;
+    background: white;
+  }
+  .diary-header h1 { font-size: 24px; font-weight: 800; color: var(--text); margin-bottom: 16px; }
+
+  .diary-tabs {
+    display: flex; gap: 0; background: #F1F5F9; border-radius: 10px; padding: 3px;
+  }
+  .diary-tab {
+    flex: 1; padding: 8px; text-align: center; border-radius: 8px;
+    font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .diary-tab.active { background: white; color: var(--primary); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+
+  .calendar-strip {
+    display: flex; gap: 6px; padding: 16px 20px;
+    overflow-x: auto; background: white;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cal-day {
+    display: flex; flex-direction: column; align-items: center;
+    min-width: 44px; padding: 8px 4px; border-radius: 12px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .cal-day.active { background: var(--primary); color: white; }
+  .cal-day .cal-weekday { font-size: 10px; font-weight: 600; opacity: 0.5; text-transform: uppercase; }
+  .cal-day .cal-date { font-size: 16px; font-weight: 700; margin-top: 4px; }
+  .cal-day.active .cal-weekday { opacity: 0.8; }
+  .cal-day .cal-dot { width: 4px; height: 4px; border-radius: 50%; margin-top: 4px; }
+  .cal-day .cal-dot.has-entry { background: var(--primary); }
+  .cal-day.active .cal-dot.has-entry { background: white; }
+
+  /* Timeline */
+  .diary-timeline { padding: 16px 20px 100px; }
+
+  .timeline-entry {
+    display: flex; gap: 12px; margin-bottom: 16px; position: relative;
+  }
+  .timeline-time {
+    width: 50px; flex-shrink: 0; text-align: right;
+    font-size: 12px; font-weight: 600; color: var(--text-secondary);
+    padding-top: 14px;
+  }
+
+  .timeline-line {
+    width: 2px; background: var(--border); position: relative;
+    flex-shrink: 0;
+  }
+  .timeline-line .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--primary); border: 2px solid white;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+    position: absolute; top: 14px; left: -4px;
+  }
+  .timeline-line .dot.green { background: var(--success); box-shadow: 0 0 0 3px rgba(16,185,129,0.15); }
+
+  .timeline-card {
+    flex: 1; background: white; border-radius: 14px; padding: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .timeline-card .tc-type { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .timeline-card .tc-type.blue { color: var(--primary); }
+  .timeline-card .tc-type.green { color: var(--success); }
+  .timeline-card .tc-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .timeline-card .tc-desc { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+  .timeline-card .tc-tags { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .timeline-card .tc-tag {
+    font-size: 10px; font-weight: 600; padding: 3px 8px;
+    border-radius: 6px;
+  }
+  .timeline-card .tc-tag.blue-light { background: #EFF6FF; color: var(--primary); }
+  .timeline-card .tc-tag.green-light { background: #ECFDF5; color: var(--success); }
+  .timeline-card .tc-tag.amber-light { background: #FFFBEB; color: var(--warning); }
+
+  /* ===== SCREEN 3: INJECTION LOG ===== */
+  .inject-screen { background: var(--bg); min-height: 100%; }
+
+  .inject-header {
+    background: white;
+    padding: 50px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .inject-header .step-indicator {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 20px;
+  }
+  .step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+  .step-dot.active { background: var(--primary); width: 24px; border-radius: 4px; }
+  .step-dot.done { background: var(--success); }
+  .inject-header h1 { font-size: 22px; font-weight: 800; color: var(--text); }
+  .inject-header p { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+
+  .body-map-container {
+    padding: 24px 20px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+
+  .body-map {
+    position: relative; width: 260px; height: 340px;
+    background: white; border-radius: 20px; padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .body-map svg {
+    width: 100%; height: 100%;
+    fill: #EFF6FF; stroke: #93C5FD; stroke-width: 0.8;
+  }
+
+  .injection-point {
+    position: absolute; width: 28px; height: 28px;
+    border-radius: 50%; border: 2px solid rgba(37,99,235,0.3);
+    background: rgba(37,99,235,0.08);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.3s;
+  }
+  .injection-point:hover {
+    border-color: var(--primary); background: rgba(37,99,235,0.15);
+    transform: scale(1.1);
+  }
+  .injection-point.selected {
+    border-color: var(--primary); background: var(--primary);
+    transform: scale(1.15);
+    box-shadow: 0 0 0 4px rgba(37,99,235,0.2), 0 2px 8px rgba(37,99,235,0.3);
+  }
+  .injection-point.selected::after {
+    content: ''; width: 8px; height: 8px; border-radius: 50%; background: white;
+  }
+  .injection-point.used {
+    border-color: var(--warning); background: #FFFBEB;
+  }
+  .injection-point.used::after {
+    content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--warning);
+  }
+
+  .injection-label {
+    position: absolute; font-size: 9px; font-weight: 600;
+    color: var(--text-secondary); white-space: nowrap;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+
+  .rotation-info {
+    margin-top: 20px; width: 100%; max-width: 260px;
+  }
+  .rotation-bar {
+    display: flex; gap: 4px; margin-top: 8px;
+  }
+  .rotation-bar .rb-item {
+    flex: 1; height: 6px; border-radius: 3px; background: var(--border);
+  }
+  .rotation-bar .rb-item.done { background: var(--success); }
+  .rotation-bar .rb-item.current { background: var(--primary); }
+  .rotation-bar .rb-item.next { background: rgba(37,99,235,0.2); border: 1px dashed var(--primary); }
+
+  .continue-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: calc(100% - 40px); margin: 24px auto;
+    padding: 14px; background: linear-gradient(135deg, #2563EB, #1D4ED8);
+    color: white; border: none; border-radius: 14px;
+    font-weight: 600; font-size: 15px;
+    box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+  }
+
+  /* ===== SCREEN 4: DOSES / SCHEDULE ===== */
+  .doses-header {
+    background: white;
+    padding: 50px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .doses-header h1 { font-size: 24px; font-weight: 800; color: var(--text); }
+  .doses-header p { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+
+  .month-selector {
+    display: flex; align-items: center; justify-content: center;
+    gap: 16px; padding: 14px 20px;
+    background: white;
+  }
+  .month-selector .month-name { font-size: 16px; font-weight: 700; color: var(--text); }
+  .month-selector .month-arrow { width: 32px; height: 32px; border-radius: 8px; background: #F1F5F9; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 14px; color: var(--text-secondary); }
+
+  .dose-timeline { padding: 16px 20px 100px; }
+
+  .dose-item {
+    display: flex; gap: 14px; margin-bottom: 16px; position: relative;
+  }
+
+  .dose-date-col {
+    width: 44px; flex-shrink: 0; text-align: center;
+    padding-top: 12px;
+  }
+  .dose-date-col .dd-day { font-size: 18px; font-weight: 800; color: var(--text); }
+  .dose-date-col .dd-month { font-size: 10px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; }
+
+  .dose-connector {
+    width: 2px; background: var(--border); position: relative; flex-shrink: 0;
+  }
+  .dose-connector .dc-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    position: absolute; top: 18px; left: -5px;
+    border: 2px solid white;
+  }
+  .dose-connector .dc-dot.done { background: var(--success); box-shadow: 0 0 0 3px rgba(16,185,129,0.15); }
+  .dose-connector .dc-dot.next { background: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+  .dose-connector .dc-dot.pending { background: var(--border); box-shadow: none; }
+
+  .dose-card {
+    flex: 1; background: white; border-radius: 14px; padding: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .dose-card.highlight { border: 1px solid rgba(37,99,235,0.2); background: #FAFBFF; }
+
+  .dose-card .dc-header {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .dose-card .dc-type { font-size: 15px; font-weight: 700; color: var(--text); }
+  .dose-card .dc-badge {
+    font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 6px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .dose-card .dc-badge.done { background: #ECFDF5; color: var(--success); }
+  .dose-card .dc-badge.next { background: #EFF6FF; color: var(--primary); }
+  .dose-card .dc-badge.pending { background: #F1F5F9; color: var(--text-muted); }
+
+  .dose-card .dc-detail { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+  .dose-card .dc-site { font-size: 11px; color: var(--text-muted); margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+
+  /* ===== SCREEN 5: MORE / RESOURCES ===== */
+  .more-header {
+    background: white;
+    padding: 50px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .more-header h1 { font-size: 24px; font-weight: 800; color: var(--text); }
+
+  .more-content { padding: 16px 20px 100px; }
+
+  .more-section { margin-bottom: 24px; }
+  .more-section h3 { font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+
+  .more-item {
+    background: white; border-radius: 14px; padding: 14px;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  .more-item .mi-icon {
+    width: 42px; height: 42px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .more-item .mi-info { flex: 1; }
+  .more-item .mi-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .more-item .mi-desc { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+  .more-item .mi-arrow { color: var(--text-muted); font-size: 14px; }
+
+  .nurse-card {
+    background: linear-gradient(135deg, #1E40AF, #2563EB);
+    border-radius: 16px; padding: 20px;
+    color: white; margin-bottom: 16px;
+  }
+  .nurse-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .nurse-card p { font-size: 12px; opacity: 0.8; margin-bottom: 12px; }
+  .nurse-card button {
+    background: white; color: var(--primary); border: none;
+    padding: 10px 20px; border-radius: 10px;
+    font-weight: 600; font-size: 13px; cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== SCREEN 1: HOME / DASHBOARD ===== -->
+<div>
+  <div class="screen-label">HOME / DASHBOARD</div>
+  <div class="phone-frame">
+    <div class="screen">
+      <!-- Hero -->
+      <div class="hero">
+        <div class="hero-topbar">
+          <div class="hero-greeting">
+            <p>Good Morning</p>
+            <h1>Sarah</h1>
+          </div>
+          <div class="hero-bell">
+            <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          </div>
+        </div>
+
+        <div class="next-dose-card">
+          <div class="progress-ring-container">
+            <svg viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="42" class="track"/>
+              <circle cx="50" cy="50" r="42" class="fill"/>
+            </svg>
+            <div class="center">
+              <span class="num">5</span>
+              <span class="label">days</span>
+            </div>
+          </div>
+          <div class="dose-info">
+            <p class="dose-label">Next Dose</p>
+            <p class="dose-name">Remsima SC 120mg</p>
+            <p class="dose-date">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Friday, Feb 14
+            </p>
+          </div>
+        </div>
+
+        <button class="log-btn">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z"/></svg>
+          Log Injection
+        </button>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-val">92%</div>
+            <div class="stat-label">Adherence</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val">8</div>
+            <div class="stat-label">Doses Taken</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val">14</div>
+            <div class="stat-label">Day Streak</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="content">
+        <div class="section-header">
+          <h2>Today</h2>
+          <a href="#">View All &rsaquo;</a>
+        </div>
+
+        <div class="event-card">
+          <div class="event-icon blue">
+            <svg width="18" height="18" fill="none" stroke="#2563EB" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+          </div>
+          <div class="event-info">
+            <div class="event-title">Dose Reminder</div>
+            <div class="event-desc">Remsima SC - Due in 5 days</div>
+          </div>
+          <div class="event-badge blue">Upcoming</div>
+        </div>
+
+        <div class="event-card">
+          <div class="event-icon green">
+            <svg width="18" height="18" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+          </div>
+          <div class="event-info">
+            <div class="event-title">Symptom Check-in</div>
+            <div class="event-desc">Log how you feel today</div>
+          </div>
+          <div class="event-badge green">Log Now</div>
+        </div>
+
+        <div class="event-card">
+          <div class="event-icon amber">
+            <svg width="18" height="18" fill="none" stroke="#F59E0B" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div class="event-info">
+            <div class="event-title">Refill Reminder</div>
+            <div class="event-desc">3 doses remaining - reorder</div>
+          </div>
+          <div class="event-badge amber">Action</div>
+        </div>
+
+        <div class="section-header" style="margin-top: 24px;">
+          <h2>Quick Actions</h2>
+        </div>
+
+        <div class="actions-grid">
+          <div class="action-card">
+            <div class="action-icon" style="background:#EFF6FF">
+              <svg width="22" height="22" fill="none" stroke="#2563EB" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2v6m0 8v6m-6-6h12"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <div class="action-title">Log Injection</div>
+            <div class="action-desc">Record site & dose</div>
+          </div>
+          <div class="action-card">
+            <div class="action-icon" style="background:#ECFDF5">
+              <svg width="22" height="22" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+            </div>
+            <div class="action-title">Symptom Diary</div>
+            <div class="action-desc">Track how you feel</div>
+          </div>
+          <div class="action-card">
+            <div class="action-icon" style="background:#F5F3FF">
+              <svg width="22" height="22" fill="none" stroke="#8B5CF6" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92V19.92C22 20.48 21.56 20.93 21 20.95C14.03 21.5 8.5 16.97 3.05 10C2.03 8.45 3 6.5 4.08 6.08L7 5L9.5 10L7 12C8.5 15 10 16.5 13 18L15 15.5L20 18L19.92 21C19.93 21.56 20.48 22 21 22"/></svg>
+            </div>
+            <div class="action-title">Nurse Support</div>
+            <div class="action-desc">Talk to a nurse</div>
+          </div>
+          <div class="action-card">
+            <div class="action-icon" style="background:#FFF7ED">
+              <svg width="22" height="22" fill="none" stroke="#F97316" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+            <div class="action-title">My Goals</div>
+            <div class="action-desc">Treatment goals</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <div class="bottom-nav">
+        <div class="nav-items">
+          <a class="nav-item active" href="#">
+            <div style="position:relative;"><div class="nav-indicator"></div>
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div>
+            <span class="nav-label">Home</span>
+          </a>
+          <a class="nav-item" href="#">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span class="nav-label">Diary</span>
+          </a>
+          <a class="nav-center" href="#">
+            <div class="fab">
+              <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 2v6m0 8v6m-6-6h12"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <span class="nav-label">Inject</span>
+          </a>
+          <a class="nav-item" href="#">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+            <span class="nav-label">Doses</span>
+          </a>
+          <a class="nav-item" href="#">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            <span class="nav-label">More</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 2: DIARY ===== -->
+<div>
+  <div class="screen-label">SYMPTOM DIARY</div>
+  <div class="phone-frame">
+    <div class="screen">
+      <div class="diary-header">
+        <h1>My Diary</h1>
+        <div class="diary-tabs">
+          <div class="diary-tab active">Timeline</div>
+          <div class="diary-tab">Calendar</div>
+          <div class="diary-tab">Reports</div>
+        </div>
+      </div>
+
+      <div class="calendar-strip">
+        <div class="cal-day">
+          <span class="cal-weekday">Mon</span>
+          <span class="cal-date">3</span>
+          <div class="cal-dot"></div>
+        </div>
+        <div class="cal-day">
+          <span class="cal-weekday">Tue</span>
+          <span class="cal-date">4</span>
+          <div class="cal-dot has-entry"></div>
+        </div>
+        <div class="cal-day">
+          <span class="cal-weekday">Wed</span>
+          <span class="cal-date">5</span>
+          <div class="cal-dot"></div>
+        </div>
+        <div class="cal-day">
+          <span class="cal-weekday">Thu</span>
+          <span class="cal-date">6</span>
+          <div class="cal-dot has-entry"></div>
+        </div>
+        <div class="cal-day">
+          <span class="cal-weekday">Fri</span>
+          <span class="cal-date">7</span>
+          <div class="cal-dot"></div>
+        </div>
+        <div class="cal-day">
+          <span class="cal-weekday">Sat</span>
+          <span class="cal-date">8</span>
+          <div class="cal-dot has-entry"></div>
+        </div>
+        <div class="cal-day active">
+          <span class="cal-weekday">Sun</span>
+          <span class="cal-date">9</span>
+          <div class="cal-dot has-entry"></div>
+        </div>
+      </div>
+
+      <div class="diary-timeline">
+        <div class="timeline-entry">
+          <div class="timeline-time">8:30</div>
+          <div class="timeline-line"><div class="dot green"></div></div>
+          <div class="timeline-card">
+            <div class="tc-type green">Injection Logged</div>
+            <div class="tc-title">Remsima SC 120mg</div>
+            <div class="tc-desc">Left Abdomen - Dose #8</div>
+            <div class="tc-tags">
+              <span class="tc-tag green-light">Completed</span>
+              <span class="tc-tag blue-light">On Schedule</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-entry">
+          <div class="timeline-time">9:00</div>
+          <div class="timeline-line"><div class="dot"></div></div>
+          <div class="timeline-card">
+            <div class="tc-type blue">Symptom Log</div>
+            <div class="tc-title">Mild injection site reaction</div>
+            <div class="tc-desc">Redness, slight swelling - Intensity: 3/10</div>
+            <div class="tc-tags">
+              <span class="tc-tag amber-light">Mild</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-entry">
+          <div class="timeline-time">14:00</div>
+          <div class="timeline-line"><div class="dot"></div></div>
+          <div class="timeline-card">
+            <div class="tc-type blue">Symptom Check-in</div>
+            <div class="tc-title">Feeling good overall</div>
+            <div class="tc-desc">No fatigue, energy level 7/10</div>
+            <div class="tc-tags">
+              <span class="tc-tag green-light">Positive</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-entry">
+          <div class="timeline-time">18:00</div>
+          <div class="timeline-line"><div class="dot"></div></div>
+          <div class="timeline-card">
+            <div class="tc-type blue">Mood Entry</div>
+            <div class="tc-title">Daily mood: Good</div>
+            <div class="tc-desc">Productive day, managed well</div>
+            <div class="tc-tags">
+              <span class="tc-tag green-light">Good</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-items">
+          <a class="nav-item" href="#"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg><span class="nav-label">Home</span></a>
+          <a class="nav-item active" href="#"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="nav-label">Diary</span></a>
+          <a class="nav-center" href="#"><div class="fab"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 2v6m0 8v6m-6-6h12"/><circle cx="12" cy="12" r="3"/></svg></div><span class="nav-label">Inject</span></a>
+          <a class="nav-item" href="#"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg><span class="nav-label">Doses</span></a>
+          <a class="nav-item" href="#"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg><span class="nav-label">More</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 3: INJECTION LOG ===== -->
+<div>
+  <div class="screen-label">INJECTION LOGGING</div>
+  <div class="phone-frame">
+    <div class="screen inject-screen">
+      <div class="inject-header">
+        <div class="step-indicator">
+          <div class="step-dot active"></div>
+          <div class="step-dot"></div>
+          <div class="step-dot"></div>
+        </div>
+        <h1>Injection Site</h1>
+        <p>Select where you injected today</p>
+      </div>
+
+      <div class="body-map-container">
+        <div class="body-map">
+          <svg viewBox="0 0 100 133">
+            <path d="M50,10 C55,10 60,15 60,20 C60,25 55,30 50,30 C45,30 40,25 40,20 C40,15 45,10 50,10 Z M40,30 L60,30 L75,60 L70,65 L60,45 L60,90 L55,120 L45,120 L40,90 L40,45 L30,65 L25,60 L40,30 Z" />
+          </svg>
+
+          <!-- Injection Points -->
+          <div class="injection-point used" style="left:16%; top:32%"></div>
+          <div class="injection-label" style="left:2%; top:40%">L. Arm</div>
+
+          <div class="injection-point" style="left:74%; top:32%"></div>
+          <div class="injection-label" style="left:70%; top:40%">R. Arm</div>
+
+          <div class="injection-point selected" style="left:35%; top:48%"></div>
+          <div class="injection-label" style="left:18%; top:56%">L. Abdomen</div>
+
+          <div class="injection-point" style="left:55%; top:48%"></div>
+          <div class="injection-label" style="left:52%; top:56%">R. Abdomen</div>
+
+          <div class="injection-point" style="left:37%; top:70%"></div>
+          <div class="injection-label" style="left:20%; top:78%">L. Thigh</div>
+
+          <div class="injection-point" style="left:53%; top:70%"></div>
+          <div class="injection-label" style="left:50%; top:78%">R. Thigh</div>
+        </div>
+
+        <div class="rotation-info">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-size:12px; font-weight:600; color:var(--text-secondary);">Site Rotation</span>
+            <span style="font-size:11px; color:var(--primary); font-weight:600;">4/6 used</span>
+          </div>
+          <div class="rotation-bar">
+            <div class="rb-item done"></div>
+            <div class="rb-item done"></div>
+            <div class="rb-item current"></div>
+            <div class="rb-item done"></div>
+            <div class="rb-item next"></div>
+            <div class="rb-item"></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-top:4px;">
+            <span style="font-size:8px; color:var(--text-muted);">L.Arm</span>
+            <span style="font-size:8px; color:var(--text-muted);">R.Arm</span>
+            <span style="font-size:8px; color:var(--primary); font-weight:600;">L.Abd</span>
+            <span style="font-size:8px; color:var(--text-muted);">R.Abd</span>
+            <span style="font-size:8px; color:var(--text-muted);">L.Thi</span>
+            <span style="font-size:8px; color:var(--text-muted);">R.Thi</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="continue-btn">
+        Continue
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg>
+      </button>
+
+      <div class="bottom-nav">
+        <div class="nav-items">
+          <a class="nav-item" href="#"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg><span class="nav-label">Home</span></a>
+          <a class="nav-item" href="#"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="nav-label">Diary</span></a>
+          <a class="nav-center" href="#"><div class="fab"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 2v6m0 8v6m-6-6h12"/><circle cx="12" cy="12" r="3"/></svg></div><span class="nav-label">Inject</span></a>
+          <a class="nav-item" href="#"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg><span class="nav-label">Doses</span></a>
+          <a class="nav-item" href="#"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg><span class="nav-label">More</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 4: DOSES SCHEDULE ===== -->
+<div>
+  <div class="screen-label">DOSE SCHEDULE</div>
+  <div class="phone-frame">
+    <div class="screen">
+      <div class="doses-header">
+        <h1>Schedule</h1>
+        <p>Your Remsima SC treatment timeline</p>
+      </div>
+
+      <div class="month-selector">
+        <button class="month-arrow">&lsaquo;</button>
+        <span class="month-name">February 2026</span>
+        <button class="month-arrow">&rsaquo;</button>
+      </div>
+
+      <div class="dose-timeline">
+        <div class="dose-item">
+          <div class="dose-date-col"><span class="dd-day">01</span><span class="dd-month">Jan</span></div>
+          <div class="dose-connector"><div class="dc-dot done"></div></div>
+          <div class="dose-card">
+            <div class="dc-header">
+              <span class="dc-type">SC Dose #5</span>
+              <span class="dc-badge done">Done</span>
+            </div>
+            <div class="dc-detail">Remsima SC 120mg</div>
+            <div class="dc-site">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Right Thigh
+            </div>
+          </div>
+        </div>
+
+        <div class="dose-item">
+          <div class="dose-date-col"><span class="dd-day">15</span><span class="dd-month">Jan</span></div>
+          <div class="dose-connector"><div class="dc-dot done"></div></div>
+          <div class="dose-card">
+            <div class="dc-header">
+              <span class="dc-type">SC Dose #6</span>
+              <span class="dc-badge done">Done</span>
+            </div>
+            <div class="dc-detail">Remsima SC 120mg</div>
+            <div class="dc-site">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Left Arm
+            </div>
+          </div>
+        </div>
+
+        <div class="dose-item">
+          <div class="dose-date-col"><span class="dd-day">29</span><span class="dd-month">Jan</span></div>
+          <div class="dose-connector"><div class="dc-dot done"></div></div>
+          <div class="dose-card">
+            <div class="dc-header">
+              <span class="dc-type">SC Dose #7</span>
+              <span class="dc-badge done">Done</span>
+            </div>
+            <div class="dc-detail">Remsima SC 120mg</div>
+            <div class="dc-site">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Left Abdomen
+            </div>
+          </div>
+        </div>
+
+        <div class="dose-item">
+          <div class="dose-date-col"><span class="dd-day">14</span><span class="dd-month">Feb</span></div>
+          <div class="dose-connector"><div class="dc-dot next"></div></div>
+          <div class="dose-card highlight">
+            <div class="dc-header">
+              <span class="dc-type">SC Dose #8</span>
+              <span class="dc-badge next">Next</span>
+            </div>
+            <div class="dc-detail">Remsima SC 120mg</div>
+            <div class="dc-site" style="color:var(--primary); font-weight:600;">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Suggested: Right Abdomen
+            </div>
+          </div>
+        </div>
+
+        <div class="dose-item">
+          <div class="dose-date-col"><span class="dd-day">28</span><span class="dd-month">Feb</span></div>
+          <div class="dose-connector"><div class="dc-dot pending"></div></div>
+          <div class="dose-card">
+            <div class="dc-header">
+              <span class="dc-type">SC Dose #9</span>
+              <span class="dc-badge pending">Upcoming</span>
+            </div>
+            <div class="dc-detail">Remsima SC 120mg</div>
+          </div>
+        </div>
+
+        <div class="dose-item">
+          <div class="dose-date-col"><span class="dd-day">14</span><span class="dd-month">Mar</span></div>
+          <div class="dose-connector"><div class="dc-dot pending"></div></div>
+          <div class="dose-card">
+            <div class="dc-header">
+              <span class="dc-type">SC Dose #10</span>
+              <span class="dc-badge pending">Upcoming</span>
+            </div>
+            <div class="dc-detail">Remsima SC 120mg</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-items">
+          <a class="nav-item" href="#"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg><span class="nav-label">Home</span></a>
+          <a class="nav-item" href="#"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="nav-label">Diary</span></a>
+          <a class="nav-center" href="#"><div class="fab"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 2v6m0 8v6m-6-6h12"/><circle cx="12" cy="12" r="3"/></svg></div><span class="nav-label">Inject</span></a>
+          <a class="nav-item active" href="#"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg><span class="nav-label">Doses</span></a>
+          <a class="nav-item" href="#"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg><span class="nav-label">More</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 5: MORE / RESOURCES ===== -->
+<div>
+  <div class="screen-label">MORE / SUPPORT</div>
+  <div class="phone-frame">
+    <div class="screen">
+      <div class="more-header">
+        <h1>More</h1>
+      </div>
+
+      <div class="more-content">
+        <!-- Nurse Support CTA -->
+        <div class="nurse-card">
+          <h3>Nurse Ambassador</h3>
+          <p>Get personalized support from a trained nurse ambassador for your treatment journey.</p>
+          <button>Connect Now</button>
+        </div>
+
+        <!-- Support & Resources -->
+        <div class="more-section">
+          <h3>Support & Resources</h3>
+          <div class="more-item">
+            <div class="mi-icon" style="background:#EFF6FF">
+              <svg width="18" height="18" fill="none" stroke="#2563EB" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+            </div>
+            <div class="mi-info">
+              <div class="mi-title">Self-Injection Guide</div>
+              <div class="mi-desc">Step-by-step instructions</div>
+            </div>
+            <span class="mi-arrow">&rsaquo;</span>
+          </div>
+          <div class="more-item">
+            <div class="mi-icon" style="background:#F5F3FF">
+              <svg width="18" height="18" fill="none" stroke="#8B5CF6" stroke-width="2" viewBox="0 0 24 24"><polygon points="23,7 16,12 23,17"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            </div>
+            <div class="mi-info">
+              <div class="mi-title">Training Videos</div>
+              <div class="mi-desc">Watch video tutorials</div>
+            </div>
+            <span class="mi-arrow">&rsaquo;</span>
+          </div>
+          <div class="more-item">
+            <div class="mi-icon" style="background:#ECFDF5">
+              <svg width="18" height="18" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+            </div>
+            <div class="mi-info">
+              <div class="mi-title">Export Health Report</div>
+              <div class="mi-desc">Share data with your doctor</div>
+            </div>
+            <span class="mi-arrow">&rsaquo;</span>
+          </div>
+          <div class="more-item">
+            <div class="mi-icon" style="background:#FFF7ED">
+              <svg width="18" height="18" fill="none" stroke="#F97316" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="mi-info">
+              <div class="mi-title">Drug Interactions</div>
+              <div class="mi-desc">Check medication safety</div>
+            </div>
+            <span class="mi-arrow">&rsaquo;</span>
+          </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="more-section">
+          <h3>Settings</h3>
+          <div class="more-item">
+            <div class="mi-icon" style="background:#F1F5F9">
+              <svg width="18" height="18" fill="none" stroke="#64748B" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="mi-info">
+              <div class="mi-title">Profile & Account</div>
+              <div class="mi-desc">Personal information</div>
+            </div>
+            <span class="mi-arrow">&rsaquo;</span>
+          </div>
+          <div class="more-item">
+            <div class="mi-icon" style="background:#F1F5F9">
+              <svg width="18" height="18" fill="none" stroke="#64748B" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            </div>
+            <div class="mi-info">
+              <div class="mi-title">Notifications</div>
+              <div class="mi-desc">Reminders & alerts</div>
+            </div>
+            <span class="mi-arrow">&rsaquo;</span>
+          </div>
+          <div class="more-item">
+            <div class="mi-icon" style="background:#F1F5F9">
+              <svg width="18" height="18" fill="none" stroke="#64748B" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            </div>
+            <div class="mi-info">
+              <div class="mi-title">Family Members</div>
+              <div class="mi-desc">Manage family profiles</div>
+            </div>
+            <span class="mi-arrow">&rsaquo;</span>
+          </div>
+          <div class="more-item">
+            <div class="mi-icon" style="background:#F1F5F9">
+              <svg width="18" height="18" fill="none" stroke="#64748B" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+            <div class="mi-info">
+              <div class="mi-title">My Goals</div>
+              <div class="mi-desc">Set treatment targets</div>
+            </div>
+            <span class="mi-arrow">&rsaquo;</span>
+          </div>
+          <div class="more-item">
+            <div class="mi-icon" style="background:#F1F5F9">
+              <svg width="18" height="18" fill="none" stroke="#64748B" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            </div>
+            <div class="mi-info">
+              <div class="mi-title">Privacy & Security</div>
+              <div class="mi-desc">Data settings</div>
+            </div>
+            <span class="mi-arrow">&rsaquo;</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-items">
+          <a class="nav-item" href="#"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg><span class="nav-label">Home</span></a>
+          <a class="nav-item" href="#"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="nav-label">Diary</span></a>
+          <a class="nav-center" href="#"><div class="fab"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 2v6m0 8v6m-6-6h12"/><circle cx="12" cy="12" r="3"/></svg></div><span class="nav-label">Inject</span></a>
+          <a class="nav-item" href="#"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg><span class="nav-label">Doses</span></a>
+          <a class="nav-item active" href="#"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg><span class="nav-label">More</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
