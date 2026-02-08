@@ -11,12 +11,12 @@ import { useParams } from 'next/navigation'
 
 const container = {
     hidden: { opacity: 0 },
-    show: { opacity: 1, transition: { staggerChildren: 0.04 } }
+    show: { opacity: 1, transition: { staggerChildren: 0.02 } }
 }
 
 const item = {
-    hidden: { opacity: 0, y: 4 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.25, ease: [0, 0, 0.58, 1] as const } }
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { duration: 0.15 } }
 }
 
 type MenuItem = {

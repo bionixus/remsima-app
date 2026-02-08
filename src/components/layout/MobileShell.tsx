@@ -7,7 +7,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Home, Calendar, BookOpen, User, Bell, MoreHorizontal } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { motion } from 'framer-motion'
 
 interface MobileShellProps {
     children: React.ReactNode
@@ -63,17 +62,14 @@ export function MobileShell({ children, locale }: MobileShellProps) {
                                     key={item.href}
                                     href={item.href}
                                     className={cn(
-                                        "relative flex flex-col items-center justify-center gap-1 min-w-0 flex-1 transition-all duration-300 py-1",
-                                        isActive ? "text-primary sc-active" : "text-white/40 hover:text-white/70"
+                                        "relative flex flex-col items-center justify-center gap-1 min-w-0 flex-1 py-1 active:opacity-70",
+                                        isActive ? "text-primary" : "text-white/40"
                                     )}
                                 >
-                                    <item.icon className={cn("w-6 h-6 transition-transform duration-200", isActive && "scale-105")} />
+                                    <item.icon className="w-6 h-6" />
                                     <span className="text-[10px] font-bold uppercase tracking-widest">{item.label}</span>
                                     {isActive && (
-                                        <motion.div
-                                            layoutId="nav-glow"
-                                            className="absolute -top-1 w-8 h-1 bg-primary rounded-full blur-[2px]"
-                                        />
+                                        <div className="absolute -top-1 w-8 h-1 bg-primary rounded-full" />
                                     )}
                                 </Link>
                             )
