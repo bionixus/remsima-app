@@ -9,11 +9,11 @@ const variants = {
     initial: { opacity: 0 },
     enter: {
         opacity: 1,
-        transition: { duration: 0.2, ease: "easeOut" },
+        transition: { duration: 0.2, ease: [0, 0, 0.58, 1] as const },
     },
     exit: {
         opacity: 0,
-        transition: { duration: 0.15, ease: "easeIn" },
+        transition: { duration: 0.15, ease: [0.42, 0, 1, 1] as const },
     },
 };
 

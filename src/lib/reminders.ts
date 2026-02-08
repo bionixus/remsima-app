@@ -166,8 +166,7 @@ export function showDoseNotification(dose: Dose, daysUntil: number) {
         icon: '/hikma-logo.png',
         badge: '/hikma-logo.png',
         tag: 'hikma-dose-reminder', // deduplicates
-        renotify: true,
-    });
+    } as NotificationOptions);
 }
 
 // ─── Dashboard auto-check ────────────────────────────────────────

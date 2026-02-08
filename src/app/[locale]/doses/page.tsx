@@ -32,7 +32,7 @@ const container = {
 
 const item = {
     hidden: { opacity: 0, y: 4 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.25, ease: "easeOut" } }
+    show: { opacity: 1, y: 0, transition: { duration: 0.25, ease: [0, 0, 0.58, 1] as const } }
 }
 
 export default function DosesPage() {
