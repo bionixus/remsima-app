@@ -13,13 +13,15 @@ interface Site {
     lastUsed?: string
 }
 
+// Coordinates are percentages relative to the body map container
+// The SVG body viewBox is 200x400, container maps 1:1
 const SITES: Site[] = [
-    { id: 'arm-left', label: 'Left Arm', shortLabel: 'L.Arm', x: 18, y: 30, lastUsed: '2 weeks ago' },
-    { id: 'arm-right', label: 'Right Arm', shortLabel: 'R.Arm', x: 82, y: 30 },
-    { id: 'abdomen-left', label: 'Left Abdomen', shortLabel: 'L.Abd', x: 38, y: 48, lastUsed: '4 days ago' },
-    { id: 'abdomen-right', label: 'Right Abdomen', shortLabel: 'R.Abd', x: 62, y: 48 },
-    { id: 'thigh-left', label: 'Left Thigh', shortLabel: 'L.Thi', x: 40, y: 72 },
-    { id: 'thigh-right', label: 'Right Thigh', shortLabel: 'R.Thi', x: 60, y: 72, lastUsed: '3 weeks ago' },
+    { id: 'arm-left', label: 'Left Upper Arm', shortLabel: 'L.Arm', x: 22, y: 32, lastUsed: '2 weeks ago' },
+    { id: 'arm-right', label: 'Right Upper Arm', shortLabel: 'R.Arm', x: 78, y: 32 },
+    { id: 'abdomen-left', label: 'Left Abdomen', shortLabel: 'L.Abd', x: 40, y: 46, lastUsed: '4 days ago' },
+    { id: 'abdomen-right', label: 'Right Abdomen', shortLabel: 'R.Abd', x: 60, y: 46 },
+    { id: 'thigh-left', label: 'Left Thigh', shortLabel: 'L.Thi', x: 39, y: 66 },
+    { id: 'thigh-right', label: 'Right Thigh', shortLabel: 'R.Thi', x: 61, y: 66, lastUsed: '3 weeks ago' },
 ]
 
 const USED_SITES = ['arm-left', 'abdomen-left', 'thigh-right']
@@ -28,11 +30,73 @@ export function BodyMap({ onSelect, selectedSite }: { onSelect: (siteId: string)
     return (
         <div className="space-y-5">
             {/* Body Map */}
-            <div className="relative w-full max-w-[280px] mx-auto aspect-[3/4] bg-white rounded-2xl p-6 shadow-sm">
-                <svg viewBox="0 0 100 133" className="w-full h-full" style={{ fill: '#EFF6FF', stroke: '#93C5FD', strokeWidth: 0.8 }}>
-                    <path d="M50,10 C55,10 60,15 60,20 C60,25 55,30 50,30 C45,30 40,25 40,20 C40,15 45,10 50,10 Z M40,30 L60,30 L75,60 L70,65 L60,45 L60,90 L55,120 L45,120 L40,90 L40,45 L30,65 L25,60 L40,30 Z" />
+            <div className="relative w-full max-w-[280px] mx-auto aspect-[1/2] bg-white rounded-2xl p-4 shadow-sm">
+                {/* Anatomical body SVG */}
+                <svg viewBox="0 0 200 400" className="w-full h-full" fill="none">
+                    {/* Head */}
+                    <ellipse cx="100" cy="38" rx="24" ry="28" fill="#EFF6FF" stroke="#93C5FD" strokeWidth="1.5" />
+
+                    {/* Neck */}
+                    <rect x="90" y="64" width="20" height="16" rx="4" fill="#EFF6FF" stroke="#93C5FD" strokeWidth="1.5" />
+
+                    {/* Torso */}
+                    <path
+                        d="M65,80 L135,80 C138,80 140,82 140,85 L140,175 C140,178 138,180 135,180 L65,180 C62,180 60,178 60,175 L60,85 C60,82 62,80 65,80 Z"
+                        fill="#EFF6FF" stroke="#93C5FD" strokeWidth="1.5"
+                    />
+
+                    {/* Left shoulder & upper arm */}
+                    <path
+                        d="M60,82 L42,90 C38,92 35,96 35,100 L35,155 C35,160 38,164 42,164 L50,164 C54,164 57,160 57,155 L57,95"
+                        fill="#EFF6FF" stroke="#93C5FD" strokeWidth="1.5"
+                    />
+                    {/* Left forearm */}
+                    <path
+                        d="M38,164 L32,220 C31,225 34,230 39,230 L47,230 C52,230 55,225 54,220 L50,164"
+                        fill="#EFF6FF" stroke="#93C5FD" strokeWidth="1.5"
+                    />
+
+                    {/* Right shoulder & upper arm */}
+                    <path
+                        d="M140,82 L158,90 C162,92 165,96 165,100 L165,155 C165,160 162,164 158,164 L150,164 C146,164 143,160 143,155 L143,95"
+                        fill="#EFF6FF" stroke="#93C5FD" strokeWidth="1.5"
+                    />
+                    {/* Right forearm */}
+                    <path
+                        d="M150,164 L146,220 C145,225 148,230 153,230 L161,230 C166,230 169,225 168,220 L162,164"
+                        fill="#EFF6FF" stroke="#93C5FD" strokeWidth="1.5"
+                    />
+
+                    {/* Waist / hip area */}
+                    <path
+                        d="M62,180 L138,180 L142,205 C142,210 138,215 132,215 L68,215 C62,215 58,210 58,205 L62,180 Z"
+                        fill="#EFF6FF" stroke="#93C5FD" strokeWidth="1.5"
+                    />
+
+                    {/* Left thigh */}
+                    <path
+                        d="M68,215 L62,310 C61,316 65,320 70,320 L88,320 C93,320 97,316 96,310 L98,215"
+                        fill="#EFF6FF" stroke="#93C5FD" strokeWidth="1.5"
+                    />
+                    {/* Left lower leg */}
+                    <path
+                        d="M66,320 L64,380 C64,385 67,390 72,390 L84,390 C89,390 92,385 92,380 L90,320"
+                        fill="#EFF6FF" stroke="#93C5FD" strokeWidth="1.5"
+                    />
+
+                    {/* Right thigh */}
+                    <path
+                        d="M102,215 L104,310 C105,316 109,320 114,320 L132,320 C137,320 141,316 140,310 L138,215"
+                        fill="#EFF6FF" stroke="#93C5FD" strokeWidth="1.5"
+                    />
+                    {/* Right lower leg */}
+                    <path
+                        d="M110,320 L108,380 C108,385 111,390 116,390 L128,390 C133,390 136,385 136,380 L134,320"
+                        fill="#EFF6FF" stroke="#93C5FD" strokeWidth="1.5"
+                    />
                 </svg>
 
+                {/* Injection site dots */}
                 {SITES.map((site) => {
                     const isSelected = selectedSite === site.id
                     const isUsed = USED_SITES.includes(site.id) && !isSelected
@@ -40,13 +104,13 @@ export function BodyMap({ onSelect, selectedSite }: { onSelect: (siteId: string)
                         <button
                             key={site.id}
                             onClick={() => onSelect(site.id)}
-                            className="absolute -translate-x-1/2 -translate-y-1/2 group"
+                            className="absolute -translate-x-1/2 -translate-y-1/2 group z-10"
                             style={{ left: `${site.x}%`, top: `${site.y}%` }}
                         >
                             <motion.div
                                 initial={false}
                                 animate={{
-                                    scale: isSelected ? 1.15 : 1,
+                                    scale: isSelected ? 1.2 : 1,
                                 }}
                                 className={cn(
                                     "w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all duration-300",
