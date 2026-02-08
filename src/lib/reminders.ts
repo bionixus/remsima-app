@@ -1,6 +1,10 @@
 
-import { format } from 'date-fns';
+import { format, differenceInDays, startOfDay } from 'date-fns';
 import type { Dose } from './medication';
+
+// ─── Storage keys ────────────────────────────────────────────────
+const NOTIF_PERMISSION_KEY = 'hikma:notifEnabled';
+const CALENDAR_ENABLED_KEY = 'hikma:calendarEnabled';
 
 // ─── ICS Calendar Export ─────────────────────────────────────────
 // Generates .ics files that work with iOS Calendar, Google Calendar,
@@ -83,7 +87,7 @@ export function downloadDoseIcs(dose: Dose, index: number) {
 export function downloadAllDosesIcs(schedule: Dose[]) {
     const events = schedule
         .filter(d => d.type === 'SC' && d.status !== 'taken')
-        .map((d, i) => buildEvent(d, schedule.indexOf(d)))
+        .map((d, _i) => buildEvent(d, schedule.indexOf(d)))
         .join('\r\n');
     const ics = wrapCalendar(events);
     triggerDownload(ics, 'remsima-schedule.ics');
@@ -101,11 +105,23 @@ function triggerDownload(content: string, filename: string) {
     URL.revokeObjectURL(url);
 }
 
+// ─── Calendar Alarm Toggle ───────────────────────────────────────
+// Tracks whether the user has enabled calendar alarms (exported ICS).
+// This is a preference flag; actual alarms live in the phone's calendar.
+
+export function isCalendarEnabled(): boolean {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem(CALENDAR_ENABLED_KEY) === 'true';
+}
+
+export function setCalendarEnabled(enabled: boolean) {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(CALENDAR_ENABLED_KEY, String(enabled));
+}
+
 // ─── Web Notifications ───────────────────────────────────────────
 // Shows browser/OS notifications when the app is open. On mobile PWAs
 // these appear as native-style notifications.
-
-const NOTIF_PERMISSION_KEY = 'hikma:notifEnabled';
 
 export function isNotificationSupported(): boolean {
     return typeof window !== 'undefined' && 'Notification' in window;
@@ -152,4 +168,19 @@ export function showDoseNotification(dose: Dose, daysUntil: number) {
         tag: 'hikma-dose-reminder', // deduplicates
         renotify: true,
     });
+}
+
+// ─── Dashboard auto-check ────────────────────────────────────────
+// Call on Dashboard mount — fires a notification if a dose is within
+// 3 days and notifications are enabled.
+
+export function checkAndNotifyUpcomingDose(nextDose: Dose | null) {
+    if (!nextDose) return;
+    if (!isNotificationEnabled()) return;
+    if (!isNotificationSupported() || Notification.permission !== 'granted') return;
+
+    const days = differenceInDays(startOfDay(nextDose.date), startOfDay(new Date()));
+    if (days <= 3 && days >= 0) {
+        showDoseNotification(nextDose, days);
+    }
 }

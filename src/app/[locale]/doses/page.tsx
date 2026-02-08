@@ -17,7 +17,8 @@ import {
 import {
     downloadDoseIcs, downloadAllDosesIcs,
     requestNotificationPermission, isNotificationSupported,
-    getNotificationPermission, isNotificationEnabled, setNotificationEnabled
+    isNotificationEnabled, setNotificationEnabled,
+    isCalendarEnabled, setCalendarEnabled
 } from '@/lib/reminders'
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from '@/lib/utils'
@@ -26,15 +27,12 @@ import { useParams } from 'next/navigation'
 
 const container = {
     hidden: { opacity: 0 },
-    show: {
-        opacity: 1,
-        transition: { staggerChildren: 0.08, delayChildren: 0.1 }
-    }
+    show: { opacity: 1, transition: { staggerChildren: 0.04 } }
 }
 
 const item = {
-    hidden: { opacity: 0, y: 12 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.25, 1, 0.5, 1] as any } }
+    hidden: { opacity: 0, y: 4 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.25, ease: "easeOut" } }
 }
 
 export default function DosesPage() {
@@ -46,7 +44,7 @@ export default function DosesPage() {
     const [editingId, setEditingId] = useState<string | null>(null)
     const [editDate, setEditDate] = useState<Date>()
     const [notifEnabled, setNotifEnabled] = useState(false)
-    const [calendarAdded, setCalendarAdded] = useState(false)
+    const [calendarOn, setCalendarOn] = useState(false)
 
     const loadSchedule = useCallback(() => {
         const ivDate = getStoredIvDate()
@@ -61,26 +59,37 @@ export default function DosesPage() {
         setIsMounted(true)
         loadSchedule()
         setNotifEnabled(isNotificationEnabled())
+        setCalendarOn(isCalendarEnabled())
         // Listen for changes from other components / tabs
         const handler = () => loadSchedule()
         window.addEventListener('hikma:schedule-updated', handler)
         return () => window.removeEventListener('hikma:schedule-updated', handler)
     }, [loadSchedule])
 
-    const handleEnableNotifications = async () => {
-        const granted = await requestNotificationPermission()
-        setNotifEnabled(granted)
+    // ── Notification toggle ──
+    const handleToggleNotifications = async () => {
+        if (notifEnabled) {
+            setNotificationEnabled(false)
+            setNotifEnabled(false)
+        } else {
+            const granted = await requestNotificationPermission()
+            setNotifEnabled(granted)
+        }
     }
 
-    const handleDisableNotifications = () => {
-        setNotificationEnabled(false)
-        setNotifEnabled(false)
-    }
-
-    const handleAddAllToCalendar = () => {
-        downloadAllDosesIcs(schedule)
-        setCalendarAdded(true)
-        setTimeout(() => setCalendarAdded(false), 3000)
+    // ── Calendar alarm toggle ──
+    const handleToggleCalendar = () => {
+        if (calendarOn) {
+            // Turn off — just update preference (events already in phone calendar
+            // must be removed manually, so we inform the user)
+            setCalendarEnabled(false)
+            setCalendarOn(false)
+        } else {
+            // Turn on — download ICS and mark enabled
+            downloadAllDosesIcs(schedule)
+            setCalendarEnabled(true)
+            setCalendarOn(true)
+        }
     }
 
     const handleAddDoseToCalendar = (dose: Dose, index: number) => {
@@ -171,50 +180,69 @@ export default function DosesPage() {
                         </button>
                     </motion.div>
 
-                    {/* Reminder Actions */}
-                    <motion.div variants={item} className="px-5 pt-4 space-y-3">
-                        {/* Add to Calendar */}
-                        <button
-                            onClick={handleAddAllToCalendar}
-                            className="w-full app-card flex items-center gap-3 active:scale-[0.98] transition-transform"
-                        >
-                            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                                <Download className="w-5 h-5 text-primary" />
-                            </div>
-                            <div className="flex-1 text-left">
-                                <p className="font-semibold text-sm text-foreground">
-                                    {calendarAdded ? 'Calendar file downloaded!' : 'Add All Doses to Calendar'}
-                                </p>
-                                <p className="text-[11px] text-muted-foreground">
-                                    {calendarAdded ? 'Open the file to add events with alarms' : 'Exports with built-in alarms for each dose'}
-                                </p>
-                            </div>
-                            {calendarAdded && <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0" />}
-                        </button>
-
-                        {/* Notification Toggle */}
-                        {isNotificationSupported() && (
+                    {/* Reminders Section */}
+                    <motion.div variants={item} className="px-5 pt-4">
+                        <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Reminders</h2>
+                        <div className="app-card space-y-0">
+                            {/* Option 1: Calendar Alarms */}
                             <button
-                                onClick={notifEnabled ? handleDisableNotifications : handleEnableNotifications}
-                                className="w-full app-card flex items-center gap-3 active:scale-[0.98] transition-transform"
+                                onClick={handleToggleCalendar}
+                                className="w-full flex items-center gap-3 py-3 active:bg-[#F8FAFC] transition-colors rounded-t-2xl"
                             >
                                 <div className={cn(
                                     "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0",
-                                    notifEnabled ? "bg-emerald-50" : "bg-amber-50"
+                                    calendarOn ? "bg-primary/10" : "bg-[#F1F5F9]"
                                 )}>
-                                    <BellRing className={cn("w-5 h-5", notifEnabled ? "text-emerald-600" : "text-amber-600")} />
+                                    <Download className={cn("w-5 h-5", calendarOn ? "text-primary" : "text-muted-foreground")} />
                                 </div>
                                 <div className="flex-1 text-left">
-                                    <p className="font-semibold text-sm text-foreground">
-                                        {notifEnabled ? 'Notifications Enabled' : 'Enable Notifications'}
-                                    </p>
+                                    <p className="font-semibold text-sm text-foreground">Calendar Alarms</p>
                                     <p className="text-[11px] text-muted-foreground">
-                                        {notifEnabled ? 'You\'ll get reminders when visiting the app' : 'Get alerts when you open the app before a dose'}
+                                        {calendarOn
+                                            ? 'Active — alarms added to your phone calendar'
+                                            : 'Adds dose events with alarms to your calendar'}
                                     </p>
                                 </div>
                                 <div className={cn(
                                     "w-11 h-6 rounded-full p-0.5 transition-colors flex-shrink-0",
-                                    notifEnabled ? "bg-emerald-500" : "bg-gray-300"
+                                    calendarOn ? "bg-primary" : "bg-gray-300"
+                                )}>
+                                    <div className={cn(
+                                        "w-5 h-5 rounded-full bg-white shadow transition-transform",
+                                        calendarOn && "translate-x-5"
+                                    )} />
+                                </div>
+                            </button>
+
+                            <div className="border-t border-[#F1F5F9]" />
+
+                            {/* Option 2: App Notifications */}
+                            <button
+                                onClick={handleToggleNotifications}
+                                className={cn(
+                                    "w-full flex items-center gap-3 py-3 active:bg-[#F8FAFC] transition-colors rounded-b-2xl",
+                                    !isNotificationSupported() && "opacity-50 pointer-events-none"
+                                )}
+                            >
+                                <div className={cn(
+                                    "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0",
+                                    notifEnabled ? "bg-amber-50" : "bg-[#F1F5F9]"
+                                )}>
+                                    <BellRing className={cn("w-5 h-5", notifEnabled ? "text-amber-600" : "text-muted-foreground")} />
+                                </div>
+                                <div className="flex-1 text-left">
+                                    <p className="font-semibold text-sm text-foreground">App Notifications</p>
+                                    <p className="text-[11px] text-muted-foreground">
+                                        {!isNotificationSupported()
+                                            ? 'Not supported in this browser'
+                                            : notifEnabled
+                                                ? 'Active — you\'ll be alerted when you open the app'
+                                                : 'Get a reminder when you visit the app near a dose'}
+                                    </p>
+                                </div>
+                                <div className={cn(
+                                    "w-11 h-6 rounded-full p-0.5 transition-colors flex-shrink-0",
+                                    notifEnabled ? "bg-amber-500" : "bg-gray-300"
                                 )}>
                                     <div className={cn(
                                         "w-5 h-5 rounded-full bg-white shadow transition-transform",
@@ -222,6 +250,11 @@ export default function DosesPage() {
                                     )} />
                                 </div>
                             </button>
+                        </div>
+                        {calendarOn && (
+                            <p className="text-[10px] text-muted-foreground mt-2 px-1">
+                                To remove calendar alarms, turn off the toggle above and delete the events from your phone&apos;s calendar app.
+                            </p>
                         )}
                     </motion.div>
 

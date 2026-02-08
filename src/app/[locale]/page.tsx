@@ -11,21 +11,19 @@ import {
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { calculateSchedule, Dose, getNextDose, getStoredIvDate } from '@/lib/medication';
+import { checkAndNotifyUpcomingDose } from '@/lib/reminders';
 import { format, differenceInDays } from 'date-fns';
 import { useParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 const container = {
   hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08, delayChildren: 0.1 }
-  }
+  show: { opacity: 1, transition: { staggerChildren: 0.04 } }
 };
 
 const item = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 1, 0.5, 1] as any } }
+  hidden: { opacity: 0, y: 4 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.25, ease: "easeOut" } }
 };
 
 const INJECTION_SITES = ['L-Arm', 'R-Arm', 'L-Abd', 'R-Abd', 'L-Thigh', 'R-Thigh'];
@@ -55,6 +53,13 @@ export default function IndexPage() {
     window.addEventListener('hikma:schedule-updated', handler);
     return () => window.removeEventListener('hikma:schedule-updated', handler);
   }, [loadSchedule]);
+
+  // Fire notification if a dose is upcoming (within 3 days)
+  useEffect(() => {
+    if (nextDose) {
+      checkAndNotifyUpcomingDose(nextDose);
+    }
+  }, [nextDose]);
 
   const daysToNextDose = nextDose ? differenceInDays(nextDose.date, new Date()) : 0;
   const progressPercent = Math.max(0, Math.min(100, (14 - daysToNextDose) / 14 * 100));

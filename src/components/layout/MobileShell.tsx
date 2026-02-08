@@ -67,7 +67,7 @@ export function MobileShell({ children, locale }: MobileShellProps) {
                                         isActive ? "text-primary sc-active" : "text-white/40 hover:text-white/70"
                                     )}
                                 >
-                                    <item.icon className={cn("w-6 h-6 transition-transform duration-300", isActive && "scale-110")} />
+                                    <item.icon className={cn("w-6 h-6 transition-transform duration-200", isActive && "scale-105")} />
                                     <span className="text-[10px] font-bold uppercase tracking-widest">{item.label}</span>
                                     {isActive && (
                                         <motion.div
