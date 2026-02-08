@@ -4,25 +4,29 @@ import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 
+// Gentle bloom transition — warmth spreading softly like a smile
 const variants = {
     initial: {
         opacity: 0,
-        y: 10,
+        scale: 0.98,
+        filter: "blur(4px)",
     },
     enter: {
         opacity: 1,
-        y: 0,
+        scale: 1,
+        filter: "blur(0px)",
         transition: {
-            duration: 0.4,
-            ease: [0.25, 1, 0.5, 1] as any, // McKinsey-style: smooth, elegant easing
+            duration: 0.5,
+            ease: [0.22, 1, 0.36, 1], // smooth deceleration — feels like a deep breath
         },
     },
     exit: {
         opacity: 0,
-        y: -10,
+        scale: 1.01,
+        filter: "blur(2px)",
         transition: {
-            duration: 0.3,
-            ease: [0.5, 0, 0.75, 0] as any,
+            duration: 0.25,
+            ease: [0.4, 0, 1, 1],
         },
     },
 };

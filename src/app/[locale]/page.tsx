@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { calculateSchedule, Dose, getNextDose } from '@/lib/medication';
+import { calculateSchedule, Dose, getNextDose, getStoredIvDate } from '@/lib/medication';
 import { format, differenceInDays } from 'date-fns';
 import { useParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -37,14 +37,24 @@ export default function IndexPage() {
   const [schedule, setSchedule] = useState<Dose[]>([]);
   const [nextDose, setNextDose] = useState<Dose | null>(null);
 
-  useEffect(() => {
-    const lastIv = new Date();
-    lastIv.setDate(lastIv.getDate() - 49);
-    const calculated = calculateSchedule(lastIv);
-    setSchedule(calculated);
-    const next = getNextDose(calculated);
-    setNextDose(next || null);
+  const loadSchedule = React.useCallback(() => {
+    const ivDate = getStoredIvDate();
+    if (ivDate) {
+      const calculated = calculateSchedule(ivDate);
+      setSchedule(calculated);
+      setNextDose(getNextDose(calculated) || null);
+    } else {
+      setSchedule([]);
+      setNextDose(null);
+    }
   }, []);
+
+  useEffect(() => {
+    loadSchedule();
+    const handler = () => loadSchedule();
+    window.addEventListener('hikma:schedule-updated', handler);
+    return () => window.removeEventListener('hikma:schedule-updated', handler);
+  }, [loadSchedule]);
 
   const daysToNextDose = nextDose ? differenceInDays(nextDose.date, new Date()) : 0;
   const progressPercent = Math.max(0, Math.min(100, (14 - daysToNextDose) / 14 * 100));

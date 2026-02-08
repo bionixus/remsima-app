@@ -27,10 +27,10 @@ export function MobileShell({ children, locale }: MobileShellProps) {
 
     return (
         <div className="flex flex-col min-h-screen bg-transparent text-foreground font-sans relative">
-            {/* Top Bar - Minimal & Integrated */}
-            <header className="sticky top-0 z-50 w-full px-4 pt-6 pb-2 transition-all">
+            {/* Top Bar - Fixed & Static */}
+            <header className="fixed top-0 left-0 right-0 z-50 w-full px-4 pt-6 pb-2 bg-[#F0F4F8]">
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
+                    <Link href={`/${locale}`} className="flex items-center gap-2">
                         <Image
                             src="/hikma-logo.png"
                             alt="Hikma"
@@ -40,15 +40,15 @@ export function MobileShell({ children, locale }: MobileShellProps) {
                             priority
                         />
                         <span className="text-[10px] uppercase tracking-widest text-primary font-bold mt-1">Remsima Care</span>
-                    </div>
-                    <button className="w-12 h-12 rounded-2xl glass flex items-center justify-center text-white/70 hover:text-white transition-colors">
+                    </Link>
+                    <button className="w-12 h-12 rounded-2xl bg-white/80 backdrop-blur-sm flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors shadow-sm">
                         <Bell className="w-6 h-6" />
                     </button>
                 </div>
             </header>
 
             {/* Main Content */}
-            <main className="flex-1 pb-28">
+            <main className="flex-1 pt-[72px] pb-28">
                 {children}
             </main>
 
