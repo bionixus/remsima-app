@@ -4,7 +4,8 @@
 import React from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { Home, Calendar, BookOpen, User, Bell } from 'lucide-react'
+import Image from 'next/image'
+import { Home, Calendar, BookOpen, User, Bell, MoreHorizontal } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
 
@@ -21,6 +22,7 @@ export function MobileShell({ children, locale }: MobileShellProps) {
         { icon: Calendar, label: 'Doses', href: `/${locale}/doses` },
         { icon: BookOpen, label: 'Articles', href: `/${locale}/articles` },
         { icon: User, label: 'Profile', href: `/${locale}/profile` },
+        { icon: MoreHorizontal, label: 'More', href: `/${locale}/more` },
     ]
 
     return (
@@ -28,14 +30,16 @@ export function MobileShell({ children, locale }: MobileShellProps) {
             {/* Top Bar - Minimal & Integrated */}
             <header className="sticky top-0 z-50 w-full px-4 pt-6 pb-2 transition-all">
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
-                            <span className="text-white font-bold text-xl">H</span>
-                        </div>
-                        <div>
-                            <span className="block font-bold text-lg tracking-tight leading-none text-white">Hikma</span>
-                            <span className="text-[10px] uppercase tracking-widest text-primary font-bold">Remsima Care</span>
-                        </div>
+                    <div className="flex items-center gap-2">
+                        <Image
+                            src="/hikma-logo.png"
+                            alt="Hikma"
+                            width={90}
+                            height={32}
+                            className="h-8 w-auto object-contain"
+                            priority
+                        />
+                        <span className="text-[10px] uppercase tracking-widest text-primary font-bold mt-1">Remsima Care</span>
                     </div>
                     <button className="w-12 h-12 rounded-2xl glass flex items-center justify-center text-white/70 hover:text-white transition-colors">
                         <Bell className="w-6 h-6" />
@@ -49,8 +53,8 @@ export function MobileShell({ children, locale }: MobileShellProps) {
             </main>
 
             {/* Bottom Navigation - Floating & Glass */}
-            <div className="fixed bottom-6 left-6 right-6 z-50">
-                <nav className="glass rounded-[2rem] px-4 py-3 shadow-2xl overflow-hidden border-white/10">
+            <div className="fixed bottom-0 left-0 right-0 z-50">
+                <nav className="bg-[#1C1C1E] px-4 py-3 pt-2 pb-[env(safe-area-inset-bottom,8px)] shadow-2xl border-t border-white/10">
                     <div className="flex items-center justify-around">
                         {navItems.map((item) => {
                             const isActive = pathname === item.href
@@ -59,7 +63,7 @@ export function MobileShell({ children, locale }: MobileShellProps) {
                                     key={item.href}
                                     href={item.href}
                                     className={cn(
-                                        "relative flex flex-col items-center justify-center gap-1 min-w-[64px] transition-all duration-300 py-1",
+                                        "relative flex flex-col items-center justify-center gap-1 min-w-0 flex-1 transition-all duration-300 py-1",
                                         isActive ? "text-primary sc-active" : "text-white/40 hover:text-white/70"
                                     )}
                                 >

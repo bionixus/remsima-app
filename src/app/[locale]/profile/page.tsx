@@ -139,12 +139,12 @@ export default function ProfilePage() {
                                         {date ? format(date, "PPP") : "Select date"}
                                     </Button>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0" align="start">
+                                <PopoverContent className="w-auto p-0 z-[60]" align="start">
                                     <Calendar
                                         mode="single"
                                         selected={date}
                                         onSelect={setDate}
-                                        initialFocus
+                                        autoFocus
                                     />
                                 </PopoverContent>
                             </Popover>
